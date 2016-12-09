@@ -2,5 +2,4 @@
 :concurrency: <%= @config['concurrency'] || 10 %>
 :verbose: false
 :queues: <% @config['queues'].each do |queue| %>
-  - <%= queue.respond_to?(:each) ? "[#{queue.join(',')}]" : queue %>
-<% end %>
+  - <%= queue.respond_to?(:each) ? "[#{queue.join(',')}]" : queue %><% end %>
