@@ -17,10 +17,14 @@ node[:deploy].each do |application, deploy|
 
   include_recipe "opsworks_sidekiq::setup"
 
-  node.set[:opsworks][:rails_stack][:restart_command] = node[:sidekiq][application][:restart_command]
+  node.set[:opsworks][:rails_stack][:restart_command] = ':'
 
   opsworks_deploy do
     deploy_data deploy
     app application
+  end
+
+  execute "restart delayed_job" do
+    command node[:sidekiq][application][:restart_command]
   end
 end
