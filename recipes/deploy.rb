@@ -24,7 +24,7 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  execute "restart delayed_job" do
-    command node[:sidekiq][application][:restart_command]
+  execute "restart sidekiq" do
+    command "sudo monit restart -g sidekiq_#{application}_group"
   end
 end
