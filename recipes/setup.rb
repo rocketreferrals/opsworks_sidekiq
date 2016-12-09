@@ -36,27 +36,12 @@ node[:deploy].each do |application, deploy|
 
       # Convert attribute classes to plain old ruby objects
       config = options[:config] ? options[:config].to_hash : {}
-      config.each do |k, v|
-        case v
-        when Chef::Node::ImmutableArray
-          config[k] = v.to_a
-        when Chef::Node::ImmutableMash
-          config[k] = v.to_hash
-        end
-      end
-
-      # Generate YAML string
-      yaml = YAML::dump(config)
-
-      # Convert YAML string keys to symbol keys for sidekiq while preserving
-      # indentation. (queues: to :queues:)
-      yaml = yaml.gsub(/^(\s*)([^:][^\s]*):/,'\1:\2:')
 
       (options[:process_count] || 1).times do |n|
-        file "#{config_directory}/sidekiq_#{worker}#{n+1}.yml" do
+        template "#{config_directory}/sidekiq_#{worker}#{n+1}.yml" do
           mode 0644
-          action :create
-          content yaml
+          source "sidekiq_config.erb"
+          variables({:config => config})
         end
       end
     end
