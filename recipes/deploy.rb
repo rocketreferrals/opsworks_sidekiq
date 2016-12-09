@@ -2,6 +2,8 @@
 
 include_recipe 'deploy'
 
+# testing.
+
 node[:deploy].each do |application, deploy|
 
   if deploy[:application_type] != 'rails'
